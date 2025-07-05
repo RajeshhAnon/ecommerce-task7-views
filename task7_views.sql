@@ -1,0 +1,10 @@
+CREATE VIEW UserOrderSummary AS SELECT u.UserName, u.Email, COUNT(o.OrderID) AS TotalOrders FROM Users u LEFT JOIN Orders o ON u.UserID = o.UserID GROUP BY u.UserID;
+CREATE VIEW ProductSales AS SELECT  p.Name AS ProductName, SUM(oi.Quantity) AS TotalSold, SUM(oi.Quantity * p.Price) AS TotalRevenue FROM Products p JOIN OrderItems oi ON p.ProductID = oi.ProductID GROUP BY p.ProductID;
+CREATE VIEW DetailedOrders AS SELECT o.OrderID, u.UserName, p.Name AS ProductName, oi.Quantity, p.Price, (oi.Quantity * p.Price) AS Total FROM Orders o JOIN Users u ON o.UserID = u.UserID JOIN OrderItems oi ON o.OrderID = oi.OrderID JOIN Products p ON oi.ProductID = p.ProductID;
+CREATE VIEW HighValueOrders AS SELECT o.OrderID, u.UserName, SUM(p.Price * oi.Quantity) AS OrderValue FROM Orders o JOIN Users u ON o.UserID = u.UserID JOIN OrderItems oi ON o.OrderID = oi.OrderID JOIN Products p ON oi.ProductID = p.ProductID GROUP BY o.OrderID HAVING OrderValue > 10000;
+CREATE VIEW UnsoldProducts AS SELECT * FROM Products WHERE ProductID NOT IN ( SELECT DISTINCT ProductID FROM OrderItems);
+SELECT * FROM UserOrderSummary;
+SELECT * FROM ProductSales;
+SELECT * FROM DetailedOrders;
+SELECT * FROM HighValueOrders;
+SELECT * FROM UnsoldProducts;
